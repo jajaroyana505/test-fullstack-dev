@@ -1,7 +1,5 @@
 <script setup>
-import ColumnChart from "@/Components/ColumnChart.vue";
 import InputLabel from "@/Components/InputLabel.vue";
-import PieChart from "@/Components/PieChart.vue";
 import TextInput from "@/Components/TextInput.vue";
 import AuthenticatedLayout from "@/Layouts/BaseLayout.vue";
 import { Head } from "@inertiajs/vue3";
