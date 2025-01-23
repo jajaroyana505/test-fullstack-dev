@@ -32,7 +32,7 @@ class FetchController extends Controller
                 "created_at" => $people['registered']['date'],
             ];
             $criteria = [
-                "email" => $people['email'], // Menggunakan email sebagai kriteria unik
+                "email" => $people['email'],
             ];
             People::updateOrCreate($criteria, $data);
         }
