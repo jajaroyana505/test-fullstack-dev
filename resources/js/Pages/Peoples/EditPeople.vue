@@ -17,21 +17,7 @@ const genderOptions = [
 
 const { props } = usePage();
 const people = props.people;
-
-const form = useForm({
-    first_name: people.first_name,
-    last_name: people.last_name,
-    dob: people.dob,
-    gender: people.gender,
-    street: people.street,
-    state: people.state,
-    city: people.city,
-    country: people.country,
-    postal_code: people.postal_code,
-    phone: people.phone,
-    email: people.email,
-    filter: "",
-});
+const form = useForm(people);
 </script>
 
 <template>
@@ -79,6 +65,7 @@ const form = useForm({
                                                     type="text"
                                                     class="mt-1 block w-full"
                                                     v-model="form.first_name"
+                                                    autofocus
                                                     required
                                                 />
 
@@ -304,13 +291,9 @@ const form = useForm({
 
                                 <div class="flex items-center gap-4">
                                     <PrimaryButton>Save</PrimaryButton>
-                                    <Link
-                                        :href="route('peoples.show', people.id)"
-                                    >
-                                        <SecondaryButton
-                                            >Cancel</SecondaryButton
-                                        >
-                                    </Link>
+                                    <SecondaryButton @click="$goBack">
+                                        Cancel
+                                    </SecondaryButton>
                                 </div>
                             </form>
                         </section>

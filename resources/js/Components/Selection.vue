@@ -7,7 +7,7 @@ const model = defineModel({
 defineProps({
     default: {
         type: String,
-        default: "Default",
+        default: "",
     },
     options: {
         type: Array,

@@ -6,6 +6,9 @@ import NavLink from "@/Components/NavLink.vue";
 import { Link } from "@inertiajs/vue3";
 
 const showingNavigationDropdown = ref(false);
+const goBack = () => {
+    window.history.back();
+};
 </script>
 
 <template>

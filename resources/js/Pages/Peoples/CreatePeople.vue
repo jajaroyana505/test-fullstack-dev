@@ -2,12 +2,13 @@
 import BaseLayout from "@/Layouts/BaseLayout.vue";
 import { Head } from "@inertiajs/vue3";
 
-import { useForm, usePage } from "@inertiajs/vue3";
+import { useForm } from "@inertiajs/vue3";
 import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import TextInput from "@/Components/TextInput.vue";
 import Selection from "@/Components/Selection.vue";
+import SecondaryButton from "@/Components/SecondaryButton.vue";
 
 const genderOptions = [
     { label: "Female", value: "female" },
@@ -296,6 +297,9 @@ const form = useForm({
                                 </div>
 
                                 <div class="flex items-center gap-4">
+                                    <SecondaryButton @click="$goBack">
+                                        Back
+                                    </SecondaryButton>
                                     <PrimaryButton>Save</PrimaryButton>
                                 </div>
                             </form>

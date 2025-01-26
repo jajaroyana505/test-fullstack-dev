@@ -7,9 +7,10 @@ import InputLabel from "@/Components/InputLabel.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import TextInput from "@/Components/TextInput.vue";
 import DangerButton from "@/Components/DangerButton.vue";
+import SecondaryButton from "@/Components/SecondaryButton.vue";
+import { ref } from "vue";
 
 const { props } = usePage();
-const form = useForm({});
 const people = props.people;
 </script>
 
@@ -223,23 +224,30 @@ const people = props.people;
                                 <div
                                     class="flex items-center justify-between gap-4"
                                 >
+                                    <div class="flex gap-4">
+                                        <SecondaryButton @click="$goBack">
+                                            Back
+                                        </SecondaryButton>
+
+                                        <Link
+                                            :href="
+                                                route('peoples.edit', people.id)
+                                            "
+                                        >
+                                            <PrimaryButton>
+                                                Edit
+                                            </PrimaryButton>
+                                        </Link>
+                                    </div>
+
                                     <Link
-                                        :href="route('peoples.edit', people.id)"
-                                    >
-                                        <PrimaryButton> Edit </PrimaryButton>
-                                    </Link>
-                                    <form
-                                        @submit.prevent="
-                                            form.delete(
-                                                route(
-                                                    'peoples.destroy',
-                                                    people.id
-                                                )
-                                            )
+                                        method="delete"
+                                        :href="
+                                            route('peoples.destroy', people.id)
                                         "
                                     >
                                         <DangerButton>Delete</DangerButton>
-                                    </form>
+                                    </Link>
                                 </div>
                             </div>
                         </section>

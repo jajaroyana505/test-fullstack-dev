@@ -10,8 +10,11 @@ import { ref } from "vue";
 import axios from "axios";
 import SuccessAlert from "@/Components/SuccessAlert.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
+import Loading from "@/Components/Loading.vue";
 
 const { props } = usePage();
+const peoples = ref(props.peoples || []);
+const isLoading = ref(false);
 
 const filterOptions = [
     { label: "Female", value: "female" },
@@ -20,40 +23,27 @@ const filterOptions = [
 ];
 
 const form = useForm({
-    key: "",
-    filter: "",
+    key: props.query.key || "",
+    filter: props.query.filter || "",
 });
 
-const peoples = ref(props.peoples || []);
-const search = async () => {
-    form.processing = true;
-    try {
-        const response = await axios.get(route("search"), {
-            params: {
-                key: form.key,
-                filter: form.filter,
-            },
-        });
-        alert(response.data.message);
-        peoples.value = response.data.peoples;
-    } catch (error) {
-        console.error("Error fetching gender data:", error);
-        alert(error.response.data.message);
-    }
-};
 const fetch = async () => {
-    form.processing = true;
     try {
+        isLoading.value = true;
         const response = await axios.get(route("api.fetch.peoples"));
+        window.location.reload();
         peoples.value = response.data.peoples;
     } catch (error) {
         console.error("Error fetching gender data:", error);
         alert(error.response.data.message);
+    } finally {
+        isLoading.value = false;
     }
 };
 </script>
 
 <template>
+    <Loading :is-visible="isLoading"></Loading>
     <Head title="List Peoples" />
 
     <BaseLayout>
@@ -67,6 +57,7 @@ const fetch = async () => {
                 </div>
             </h2>
         </template>
+
         <div class="pt-3" v-if="props.flash.success">
             <div
                 class="mx-auto max-w-7xl bg-transparent space-y-1 sm:px-6 lg:px-8"
@@ -79,7 +70,10 @@ const fetch = async () => {
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
                 <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
                     <div class="p-6">
-                        <form @submit.prevent="search" class="mt-6 flex gap-3">
+                        <form
+                            @submit.prevent="form.get(route('peoples.index'))"
+                            class="mt-6 flex gap-3"
+                        >
                             <TextInput
                                 id="search"
                                 type="text"
@@ -88,8 +82,8 @@ const fetch = async () => {
                                 placeholder="Search"
                             />
                             <Selection
+                                default="All"
                                 v-model="form.filter"
-                                default="Gender"
                                 :options="filterOptions"
                                 class="min-w-fit rounded-l-none"
                             />
@@ -98,12 +92,14 @@ const fetch = async () => {
                             </PrimaryButton>
                         </form>
                     </div>
+
                     <div class="p-6">
                         <TablePeoples :peoples="peoples" />
                     </div>
                 </div>
+
                 <div
-                    v-if="!props.peoples.length"
+                    v-if="props.peoples.data.length == 0"
                     class="overflow-hidden bg-white shadow-sm sm:rounded-lg"
                 >
                     <div class="p-6 text-center">

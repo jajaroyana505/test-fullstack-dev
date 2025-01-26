@@ -22,8 +22,12 @@ const getDob = async () => {
     }
 };
 
+let timeout = null;
 const changeFilter = () => {
-    getDob();
+    clearTimeout(timeout);
+    timeout = setTimeout(() => {
+        getDob();
+    }, 1000);
 };
 
 const months = [

@@ -15,40 +15,48 @@ class PeopleController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+
+        if ($request->query()) {
+            $peoples = $this->search($request);
+        } else {
+            $peoples = People::orderBy('updated_at', 'desc')->paginate(10);
+        }
         return Inertia::render('Peoples/ListPeople', [
             'status' => session('status'),
-            'peoples' => People::orderBy('updated_at', 'desc')->get()
+            'peoples' => $peoples,
+            'query' => $request->query() ? $request->query() : ''
         ]);
     }
 
     public function search(Request $request)
     {
+
         $query = People::query();
-
         if ($request->key) {
-            $query->where('first_name', 'like', '%' . $request->key . '%')
-                ->orWhere('last_name', 'like', '%' . $request->key . '%')
-                ->orWhere('dob', 'like', '%' . $request->key . '%')
-                ->orWhere('state', 'like', '%' . $request->key . '%')
-                ->orWhere('street', 'like', '%' . $request->key . '%')
-                ->orWhere('city', 'like', '%' . $request->key . '%')
-                ->orWhere('postal_code', 'like', '%' . $request->key . '%')
-                ->orWhere('phone', 'like', '%' . $request->key . '%')
-                ->orWhere('email', 'like', '%' . $request->key . '%')
-            ;
+            $searchableColumns = [
+                'first_name',
+                'last_name',
+                'dob',
+                'state',
+                'street',
+                'city',
+                'postal_code',
+                'phone',
+                'email'
+            ];
+            $query->where(function ($query) use ($searchableColumns, $request) {
+                foreach ($searchableColumns as $column) {
+                    $query->orWhere($column, 'like', '%' . $request->key . '%');
+                }
+            });
         }
-
         if ($request->filter) {
             $query->where('gender', $request->filter);
         }
 
-        $peoples = $query->get();
-
-        return [
-            'peoples' => $peoples,
-        ];
+        return $query->paginate(10)->appends($request->query());
     }
 
     /**
@@ -94,6 +102,6 @@ class PeopleController extends Controller
     public function destroy(People $people)
     {
         $people->delete();
-        return Redirect::route('peoples.index')->with('success', 'People has been deleted successfully');
+        return to_route('peoples.index')->with('success', 'People has been deleted successfully');
     }
 }
